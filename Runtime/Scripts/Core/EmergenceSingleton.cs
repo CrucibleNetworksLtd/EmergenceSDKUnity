@@ -24,7 +24,10 @@ namespace EmergenceSDK.Runtime
         public UICursorHandler CursorHandler => cursorHandler ??= cursorHandler = new UICursorHandler();
         
         public EmergenceConfiguration Configuration;
-        [SerializeField] private EmergenceEnvironment environment;
+        
+        [SerializeField] 
+        private EmergenceEnvironment environment;
+        
         private UICursorHandler cursorHandler;
         private GameObject ui;
         private string accessToken;
@@ -62,8 +65,25 @@ namespace EmergenceSDK.Runtime
         [Header("Settings for the default Emergence UI")]
         public LoginFlow DefaultLoginFlow = LoginFlow.WalletConnect;
 
+        [SerializeField] 
+        private int qrCodeTimeout = 60;
+
+        public int QrCodeTimeout => qrCodeTimeout;
+
         private ReconnectionQR reconnectionQR;
         private ISessionService sessionService;
+        
+        private GameObject validatedUi
+        {
+            get
+            {
+                if (ui == null && transform.childCount > 0)
+                {
+                    ui = transform.GetChild(0).gameObject;
+                }
+                return ui;
+            }
+        }
 
         /// <summary>
         /// Opens the Emergence Overlay
@@ -97,10 +117,10 @@ namespace EmergenceSDK.Runtime
         
         private void OpenOverlayFirstTime()
         {
-            ui.SetActive(true);
+            validatedUi.SetActive(true);
             GameObject UIRoot = Instantiate(Resources.Load<GameObject>("Emergence Root"));
             UIRoot.name = "Emergence UI Overlay";
-            ui.SetActive(false);
+            validatedUi.SetActive(false);
             ScreenManager.Instance.gameObject.SetActive(true);
             ScreenManager.Instance.ShowWelcome().Forget();
             CursorHandler.SaveCursor();
@@ -159,9 +179,8 @@ namespace EmergenceSDK.Runtime
                 EmergenceLogger.LogError("Missing children");
                 return;
             }
-
-            ui = transform.GetChild(0).gameObject;
-            ui.SetActive(false);
+            
+            validatedUi.SetActive(false);
         }
 
         void Update()

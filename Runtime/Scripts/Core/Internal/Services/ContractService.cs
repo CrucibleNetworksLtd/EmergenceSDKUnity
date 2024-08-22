@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EmergenceSDK.Runtime.Internal.Types;
-using EmergenceSDK.Runtime.Internal.UI;
 using EmergenceSDK.Runtime.Internal.Utils;
 using EmergenceSDK.Runtime.Services;
 using EmergenceSDK.Runtime.Types;
@@ -31,7 +30,7 @@ namespace EmergenceSDK.Runtime.Internal.Services
         {
             if (CheckForNewContract(contractInfo))
             {
-                bool loadedSuccessfully = await LoadContract(contractInfo.ContractAddress, contractInfo.ABI, contractInfo.Network);
+                bool loadedSuccessfully = await LoadContract(contractInfo.ContractAddress, contractInfo.ABI, contractInfo.Network, contractInfo.ChainId);
                 if (!loadedSuccessfully)
                 {
                     EmergenceLogger.LogError("Error loading contract");
@@ -41,13 +40,14 @@ namespace EmergenceSDK.Runtime.Internal.Services
             return true;
         }
 
-        private async UniTask<bool> LoadContract(string contractAddress, string ABI, string network)
+        private async UniTask<bool> LoadContract(string contractAddress, string ABI, string network, int chainId)
         {
             Contract data = new Contract()
             {
                 contractAddress = contractAddress,
                 ABI = ABI,
                 network = network,
+                chainId = chainId
             };
 
             string dataString = SerializationHelper.Serialize(data, false);
@@ -128,17 +128,6 @@ namespace EmergenceSDK.Runtime.Internal.Services
         private async UniTask<ServiceResponse<WriteContractResponse>> HandleWriteMethodError<T>(WebResponse response, SerialisedWriteRequest<T> serialisedWriteRequest)
         {
             var ret = new ServiceResponse<WriteContractResponse>(false);
-            switch (response.StatusCode)
-            {
-                case 502:
-                case 500: 
-                case 504:
-                {
-                    await ReconnectionQR.FireEventOnReconnection(async () => ret = await WriteMethodAsyncRetry(serialisedWriteRequest));
-                    break;
-                }
-            }
-
             return ret;
         }
 
@@ -223,8 +212,6 @@ namespace EmergenceSDK.Runtime.Internal.Services
         private class SerialisedWriteRequest<T>
         {
             public readonly ContractInfo ContractInfo;
-            // public readonly string LocalAccountNameIn;
-            // public readonly string GasPriceIn;
             public readonly string Value;
             public readonly T Body;
             public int Attempt;
@@ -232,8 +219,6 @@ namespace EmergenceSDK.Runtime.Internal.Services
             public SerialisedWriteRequest(ContractInfo contractInfo, string value, T body, int attempt)
             {
                 ContractInfo = contractInfo;
-                // LocalAccountNameIn = "";
-                // GasPriceIn = "";
                 Value = value;
                 Body = body;
                 Attempt = attempt;
