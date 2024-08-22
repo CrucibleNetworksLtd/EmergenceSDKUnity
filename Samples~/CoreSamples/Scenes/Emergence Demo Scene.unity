@@ -536,7 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instructionsGO: {fileID: 790693635}
-  deployedContract: {fileID: 0}
+  deployedContract: {fileID: 11400000, guid: a0ad52ac6a0555942a2148a29b459241, type: 2}
 --- !u!65 &137256631
 BoxCollider:
   m_ObjectHideFlags: 0
