@@ -23,8 +23,6 @@ namespace EmergenceSDK.Runtime.Futureverse.Internal
         public FuturepassInformationResponse CurrentFuturepassInformation { get; set; }
 
         private readonly IWalletService walletService;
-        private ICustodialSigningService custodialSigningService;
-        private bool isCustodialLogin = false;
 
         public FutureverseService(IWalletService walletService)
         {
@@ -307,7 +305,7 @@ namespace EmergenceSDK.Runtime.Futureverse.Internal
 
                 // Nonce is valid, request to sign
                 generatedArtm = ArtmBuilder.GenerateArtm(message, artmOperations, address, nonce);
-                if(!isCustodialLogin)
+                if(!EmergenceSingleton.Instance.IsCustodialLogin)
                 {
                     var signatureResponse = await walletService.RequestToSignAsync(generatedArtm);
                     if (!signatureResponse.Successful)
@@ -319,6 +317,7 @@ namespace EmergenceSDK.Runtime.Futureverse.Internal
                 }
                 else
                 {
+                    var custodialSigningService = EmergenceServiceProvider.GetService<ICustodialSigningService>();
                     signature = await custodialSigningService.RequestToSignAsync(walletService.WalletAddress,generatedArtm);
                 }
             }
@@ -410,14 +409,6 @@ namespace EmergenceSDK.Runtime.Futureverse.Internal
         }
 
         public void HandleConnection(ISessionService sessionService) { }
-
-        public void SetCustodialStatus(bool isCustodial)
-        {
-            isCustodialLogin = isCustodial;
-            if (isCustodial && custodialSigningService == null)
-            {
-                custodialSigningService = EmergenceServiceProvider.GetService<ICustodialSigningService>();
-            }
-        }
+        
     }
 }
