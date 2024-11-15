@@ -1262,6 +1262,11 @@ PrefabInstance:
       propertyPath: selectedEnvironment
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4551424931659368759, guid: d11676e3b1baadb4a84528313b89733e,
+        type: 3}
+      propertyPath: environment
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5017168669279314667, guid: d11676e3b1baadb4a84528313b89733e,
         type: 3}
       propertyPath: m_IsActive
@@ -1995,7 +2000,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000104904175, y: 0}
+  m_AnchoredPosition: {x: 0.00077490753, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1284780356033827177
