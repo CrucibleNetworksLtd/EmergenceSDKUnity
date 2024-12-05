@@ -6098,6 +6098,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 51037822, guid: d11676e3b1baadb4a84528313b89733e, type: 3}
+      propertyPath: DefaultLoginFlow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 51037822, guid: d11676e3b1baadb4a84528313b89733e, type: 3}
       propertyPath: UseNewInputSystem
       value: 1
       objectReference: {fileID: 0}
